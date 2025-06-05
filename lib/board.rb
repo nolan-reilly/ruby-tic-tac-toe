@@ -28,6 +28,10 @@ class Board
     @board[row][col].value = symbol
   end
 
+  def get_cell_value(row, col)
+    @board[row][col].value
+  end
+
   def print_board
     @height.times do |row|
       @width.times do |col|

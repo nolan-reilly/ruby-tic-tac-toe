@@ -14,14 +14,63 @@ class GameController
 
   def game_loop
     # If either player has won release from game loop
-    while !@player_one.has_won || !@player_two.has_won
+    while !@player_one.has_won && !@player_two.has_won
       # Game Loop
       write_to_cell(@player_one.symbol) if @player_one.is_turn
       write_to_cell(@player_two.symbol) if @player_two.is_turn
+
+      has_won = check_row_win
+      puts has_won
+
       swap_turns
 
     end
   end
+
+  def current_symbol
+    if @player_one.is_turn
+      @player_one.symbol
+    else
+      @player_two.symbol
+    end
+  end
+
+  # FIXME: This function has issues related to get_cell_value, as we're always
+  #        returning false in every scenario
+  def check_row_win
+    symbol = current_symbol
+    puts "Current Symbol: #{symbol}"
+
+    has_won = true # Assume player has won at the start of each check
+
+    3.times do |i|
+      3.times do |j|
+        has_won = false if @board.get_cell_value(i, j) != symbol
+      end
+
+      return true if has_won == true
+    end
+
+    false
+  end
+
+  # TODO: Fix this after fixing Row Condition Check
+  # def check_column_win
+  #   symbol = current_symbol
+  #   puts "Current Symbol: #{symbol}"
+
+  #   has_won = true # Assume player has won at the start of each check
+
+  #   3.times do |i|
+  #     3.times do |j|
+  #       has_won = false if @board.get_cell_value(j, i) != symbol
+  #     end
+
+  #     return true if has_won == true
+  #   end
+
+  #   false
+  # end
 
   def swap_turns
     if @player_one.is_turn
@@ -45,7 +94,7 @@ class GameController
     loop do
       puts "Select a #{type} [0-2]: "
       input = gets.chomp.to_i
-      return input if input >= 0 || input < 4
+      return input if input >= 0 && input < 3
 
       puts "Please Enter a Valid #{type}"
     end
