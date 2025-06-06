@@ -19,7 +19,7 @@ class GameController
       write_to_cell(@player_one.symbol) if @player_one.is_turn
       write_to_cell(@player_two.symbol) if @player_two.is_turn
 
-      has_won = check_column_win
+      has_won = check_top_right_diagonal_win
       puts has_won
 
       swap_turns
@@ -37,7 +37,6 @@ class GameController
 
   def check_row_win
     symbol = current_symbol
-    puts "Current Symbol: #{symbol}"
 
     3.times do |i|
       has_won = true # Assume player has won at the start of each check
@@ -53,7 +52,6 @@ class GameController
 
   def check_column_win
     symbol = current_symbol
-    puts "Current Symbol: #{symbol}"
 
     3.times do |i|
       has_won = true # Assume player has won at the start of each check
@@ -65,6 +63,33 @@ class GameController
     end
 
     false
+  end
+
+  def check_top_left_diagonal_win
+    symbol = current_symbol
+
+    has_won = true
+
+    # Left to bottom right
+    3.times do |i|
+      has_won = false if @board.get_cell_value(i, i) != symbol
+    end
+
+    has_won
+  end
+
+  def check_top_right_diagonal_win
+    symbol = current_symbol
+    has_won = true
+
+    j = 2
+    # Left to bottom right
+    3.times do |i|
+      has_won = false if @board.get_cell_value(i, j) != symbol
+      j -= 1
+    end
+
+    has_won
   end
 
   def swap_turns
