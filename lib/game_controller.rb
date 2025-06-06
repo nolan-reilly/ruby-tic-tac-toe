@@ -19,7 +19,7 @@ class GameController
       write_to_cell(@player_one.symbol) if @player_one.is_turn
       write_to_cell(@player_two.symbol) if @player_two.is_turn
 
-      has_won = check_top_right_diagonal_win
+      has_won = check_main_diagonal_win
       puts has_won
 
       swap_turns
@@ -65,7 +65,7 @@ class GameController
     false
   end
 
-  def check_top_left_diagonal_win
+  def check_main_diagonal_win
     symbol = current_symbol
 
     has_won = true
@@ -78,7 +78,7 @@ class GameController
     has_won
   end
 
-  def check_top_right_diagonal_win
+  def check_anti_diagonal_win
     symbol = current_symbol
     has_won = true
 
@@ -103,11 +103,20 @@ class GameController
   end
 
   def write_to_cell(symbol)
-    row = prompt_coordinate('row')
-    col = prompt_coordinate('col')
+    loop do
+      row = prompt_coordinate('row')
+      col = prompt_coordinate('col')
 
-    @board.write_to_cell(row, col, symbol)
-    @board.print_board
+      unless @board.get_cell_value(row, col).nil?
+        puts 'Cell Occupied'
+        @board.print_board
+        next
+      end
+
+      @board.write_to_cell(row, col, symbol)
+      @board.print_board
+      break
+    end
   end
 
   def prompt_coordinate(type)
