@@ -19,7 +19,7 @@ class GameController
       write_to_cell(@player_one.symbol) if @player_one.is_turn
       write_to_cell(@player_two.symbol) if @player_two.is_turn
 
-      has_won = check_row_win
+      has_won = check_column_win
       puts has_won
 
       swap_turns
@@ -35,42 +35,37 @@ class GameController
     end
   end
 
-  # FIXME: This function has issues related to get_cell_value, as we're always
-  #        returning false in every scenario
   def check_row_win
     symbol = current_symbol
     puts "Current Symbol: #{symbol}"
 
-    has_won = true # Assume player has won at the start of each check
-
     3.times do |i|
+      has_won = true # Assume player has won at the start of each check
       3.times do |j|
         has_won = false if @board.get_cell_value(i, j) != symbol
       end
 
-      return true if has_won == true
+      return true if has_won
     end
 
     false
   end
 
-  # TODO: Fix this after fixing Row Condition Check
-  # def check_column_win
-  #   symbol = current_symbol
-  #   puts "Current Symbol: #{symbol}"
+  def check_column_win
+    symbol = current_symbol
+    puts "Current Symbol: #{symbol}"
 
-  #   has_won = true # Assume player has won at the start of each check
+    3.times do |i|
+      has_won = true # Assume player has won at the start of each check
+      3.times do |j|
+        has_won = false if @board.get_cell_value(j, i) != symbol
+      end
 
-  #   3.times do |i|
-  #     3.times do |j|
-  #       has_won = false if @board.get_cell_value(j, i) != symbol
-  #     end
+      return true if has_won
+    end
 
-  #     return true if has_won == true
-  #   end
-
-  #   false
-  # end
+    false
+  end
 
   def swap_turns
     if @player_one.is_turn
