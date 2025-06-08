@@ -1,6 +1,8 @@
 require_relative './board'
 require_relative './player'
 
+# TODO: Fix up general structure & code of game controller class
+
 # Handles all game logic and user input of tic, tac, toe
 class GameController
   # User input function
@@ -15,16 +17,33 @@ class GameController
   def game_loop
     # If either player has won release from game loop
     while !@player_one.has_won && !@player_two.has_won
-      # Game Loop
+      # Let the current active player write a cell
       write_to_cell(@player_one.symbol) if @player_one.is_turn
       write_to_cell(@player_two.symbol) if @player_two.is_turn
 
-      has_won = check_main_diagonal_win
-      puts has_won
+      has_won = check_for_win # After a player has written a cell check if they won
+      board_filled = board_filled?
 
-      swap_turns
-
+      if has_won
+        puts "#{@player_one.name} Won!\nExiting Game..."
+        exit
+      elsif board_filled
+        puts "Board filled\nExiting Game..."
+        exit
+      else
+        swap_turns
+      end
     end
+  end
+
+  def board_filled?
+    3.times do |i|
+      3.times do |j|
+        return false if @board.get_cell_value(i, j).nil?
+      end
+    end
+
+    true # If we didn't return false after checking all the indices must be filled
   end
 
   def current_symbol
@@ -33,6 +52,16 @@ class GameController
     else
       @player_two.symbol
     end
+  end
+
+  # Check each possible way that someone can win
+  def check_for_win
+    return true if check_row_win
+    return true if check_column_win
+    return true if check_main_diagonal_win
+    return true if check_anti_diagonal_win
+
+    false
   end
 
   def check_row_win
